@@ -1,4 +1,4 @@
--- observations de bouquetins
+-- observations de bouquetins dans geonature
 SELECT
     nom_cite,
     unique_id_sinp,
