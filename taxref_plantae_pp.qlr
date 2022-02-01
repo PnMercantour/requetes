@@ -2,14 +2,14 @@
 <qlr>
   <layer-tree-group checked="Qt::Checked" name="" expanded="1">
     <customproperties/>
-    <layer-tree-layer legend_split_behavior="0" providerKey="postgres" patch_size="-1,-1" source="service='geonature' sslmode=verify-ca key='cd_nom,id_statut' estimatedmetadata=true selectatid=false checkPrimaryKeyUnicity='1' table=&quot;(SELECT     patrimoniale,     protegee,     taxref.* FROM     taxonomie.vm_plantae_pp     JOIN taxonomie.taxref USING (cd_nom)&#xa;)&quot;" checked="Qt::Checked" legend_exp="" name="Taxref Plantae patrimoniales ou protégées" expanded="1" id="Taxref_Plantae_patrimoniales_ou_protégées_37d0d969_c764_4a84_850d_627ba0beca39">
+    <layer-tree-layer legend_split_behavior="0" providerKey="postgres" patch_size="-1,-1" source="service='geonature' sslmode=verify-ca key='cd_nom' estimatedmetadata=true selectatid=false checkPrimaryKeyUnicity='0' table=&quot;(SELECT     patrimoniale,     protegee,     taxref.* FROM     taxonomie.vm_plantae_pp     JOIN taxonomie.taxref USING (cd_nom)&#xa;)&quot;" checked="Qt::Checked" legend_exp="" name="Taxref Plantae patrimoniales ou protégées" expanded="1" id="Taxref_Plantae_patrimoniales_ou_protégées_37d0d969_c764_4a84_850d_627ba0beca39">
       <customproperties/>
     </layer-tree-layer>
   </layer-tree-group>
   <maplayers>
     <maplayer maxScale="0" autoRefreshTime="0" hasScaleBasedVisibilityFlag="0" refreshOnNotifyEnabled="0" minScale="1e+08" readOnly="0" styleCategories="AllStyleCategories" geometry="No geometry" refreshOnNotifyMessage="" autoRefreshEnabled="0" type="vector" wkbType="NoGeometry">
       <id>Taxref_Plantae_patrimoniales_ou_protégées_37d0d969_c764_4a84_850d_627ba0beca39</id>
-      <datasource>service='geonature' sslmode=verify-ca key='cd_nom,id_statut' estimatedmetadata=true selectatid=false checkPrimaryKeyUnicity='1' table="(SELECT     patrimoniale,     protegee,     taxref.* FROM     taxonomie.vm_plantae_pp     JOIN taxonomie.taxref USING (cd_nom)
+      <datasource>service='geonature' sslmode=verify-ca key='cd_nom' estimatedmetadata=true selectatid=false checkPrimaryKeyUnicity='0' table="(SELECT     patrimoniale,     protegee,     taxref.* FROM     taxonomie.vm_plantae_pp     JOIN taxonomie.taxref USING (cd_nom)
 )"</datasource>
       <keywordList>
         <value></value>
