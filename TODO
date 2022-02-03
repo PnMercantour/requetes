@@ -1,0 +1,3 @@
+Remplacer les occurences d'id_nomenclatures explicites par l'appel à la fonction de calcul symbolique
+exemple:
+select ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO', '1') georeferencement
