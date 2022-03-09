@@ -1,0 +1,17 @@
+# Personnalisation de l'instance geonature du PNM
+
+## Synthèse
+
+### Ajout d'une colonne `centroid_2154` à la table `gn_synthese.synthese`
+
+Motivation: Les agents du PNM utilisent QGIS (en 2154) comme client de la base geonature. QGIS ne traite que des sources de données géométriques homogènes, or la colonne `the_geom_local` peut contenir des objets géométriques arbitraires, le plus souvent des points, mais parfois aussi des polygones ou des segments de droite.
+
+On ajoute à la table `gn_synthese.synthese` la colonne `centroid_2154` de type `geometry(POINT, 2154)`, calculée comme le centroide de la valeur de la colonne `the_geom_local`.
+
+On crée un trigger pour le calcul automatique de la valeur `centroid_2154` à partir de celle de `the_geom_local`.
+
+On crée un index géométrique sur cette nouvelle colonne.
+
+Remarque 1: La colonne `the_geom_point` remplit une fonction similaire pour les clients web (en 4326). On a préféré l'option de créer une colonne dans le SRS 2154 plutôt que de reprojeter à la volée.
+
+Remarque 2: Le calcul à la volée du centroide de `the_geom_local`, par exemple dans une vue, n'est pas une option viable car en l'absence d'index sur la colonne géométrique, les performances de QGIS s'effondrent et rendent l'outil inutilisable.
