@@ -15,3 +15,11 @@ On crée un index géométrique sur cette nouvelle colonne.
 Remarque 1: La colonne `the_geom_point` remplit une fonction similaire pour les clients web (en 4326). On a préféré l'option de créer une colonne dans le SRS 2154 plutôt que de reprojeter à la volée.
 
 Remarque 2: Le calcul à la volée du centroide de `the_geom_local`, par exemple dans une vue, n'est pas une option viable car en l'absence d'index sur la colonne géométrique, les performances de QGIS s'effondrent et rendent l'outil inutilisable.
+
+## Occtax
+
+### Valeur valide pour id_nomenclature_observation_status
+
+Motivation : occtax mobile donne la valeur NULL à cet attribut lorsqu'il est écrit dans la table `pr_occtax.t_occurrences_occtax`. La valeur par défaut n'est pas prise en compte.
+
+En attendant la correction du problème dans occtax mobile (tout simplement ne plus écrire cet attribut ou écrire la valeur `present`), on ajoute un trigger sur la table pour forcer la valeur `present` lorsqu'elle vaut NULL sur un INSERT ou UPDATE.
