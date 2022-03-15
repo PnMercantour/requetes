@@ -1,5 +1,18 @@
 # Personnalisation de l'instance geonature du PNM
 
+## Taxonomie
+
+table taxonomy.tr_especes_enjeu_agropasto
+
+Liste des espèces d'insectes à enjeu pour l'agropastoralisme
+
+Liste établie par un expert et communiquée par MFL.
+taxon 54085 Maculinea arion renommée en 631133 (Phengaris arion) qui est le cd_ref de l'espèce en v11.
+
+L'attribut cd_nom correspond au nom valide en taxref V11, utiliser cet attribut pour filtrer les observations.
+
+L'attribut cd_ref a été défini à partir d'une version plus récente de taxref : ne pas utiliser pour l'instant.
+
 ## Synthèse
 
 ### Ajout d'une colonne `centroid_2154` à la table `gn_synthese.synthese`
