@@ -1,17 +1,7 @@
-with taxon as (Select distinct
-  cd_ref
-FROM
-  gn_synthese.synthese s
-  JOIN taxonomie.taxref USING (cd_nom)
-  LEFT JOIN (
-    SELECT
-      cta.cd_ref
-    FROM
-      taxonomie.cor_taxon_attribut cta
-      JOIN taxonomie.bib_attributs ba USING (id_attribut)
-    WHERE
-      ba.nom_attribut::text = 'patrimonial'::text
-      AND cta.valeur_attribut = 'oui'::text) patrimoniale USING (cd_ref)) 
-select taxref.*, true as patrimonial from taxonomie.taxref
-JOIN taxon on (taxref.cd_nom=taxon.cd_ref)
-;
+with taxon_pat as (select * from taxonomie.v_taxref_pp 
+                   where patrimoniale and cd_nom=cd_ref),
+obs as (select distinct cd_ref from gn_synthese.synthese 
+        join taxonomie.taxref using(cd_nom))
+select taxon_pat.* 
+from taxon_pat 
+join obs using (cd_ref); 
