@@ -8,7 +8,7 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_update_centroid_2154 ()
   LANGUAGE plpgsql
   AS $function$
 BEGIN
-  NEW.centroid_2154 = st_centroid (NEW.the_geom_local);
+  NEW.centroid_2154 = st_snaptogrid(st_centroid (NEW.the_geom_local), 1);
   RETURN new;
 END;
 $function$;

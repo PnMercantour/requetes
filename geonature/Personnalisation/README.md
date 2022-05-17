@@ -29,6 +29,8 @@ Remarque 1: La colonne `the_geom_point` remplit une fonction similaire pour les 
 
 Remarque 2: Le calcul à la volée du centroide de `the_geom_local`, par exemple dans une vue, n'est pas une option viable car en l'absence d'index sur la colonne géométrique, les performances de QGIS s'effondrent et rendent l'outil inutilisable.
 
+Mise à jour 2022-05-17 : la coordonnée calculée est calée (snaptogrid) sur une grille de 1m, avec pour effet de supprimer (visuellement) les chiffres non significatifs. Cela n'a pas d'effet sur la taille des nombres (float). Voir également la fonction ST_QuantizeCoordinates qui supprime les bits de poids faible du nombre encodé, ce qui permet de le compresser (éventuellement). Cette fonction nécessite qgis >=2.5.0
+
 ## Occtax
 
 ### Valeur valide pour id_nomenclature_observation_status
