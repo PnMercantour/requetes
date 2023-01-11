@@ -31,7 +31,8 @@ obs_ante AS (
   -- observations antérieures des mêmes taxons sur la commune
   SELECT cd_ref,
     min(s.date_min)::date premiere_obs_commune,
-    max(date_max)::date derniere_obs_commune
+    max(date_max)::date derniere_obs_commune,
+    count(*) nbre_observations_commune
   FROM gn_synthese.synthese s
     JOIN gn_meta.t_datasets USING (id_dataset)
     JOIN gn_synthese.cor_area_synthese cas USING (id_synthese)
@@ -48,7 +49,8 @@ obs_pnm_ante AS (
   -- observations  antérieures des mêmes taxons sur le territoire du PNM (approximé par la base de données entière)
   SELECT cd_ref,
     min(s.date_min)::date premiere_obs_pnm,
-    max(date_max)::date derniere_obs_pnm
+    max(date_max)::date derniere_obs_pnm,
+    count(*) nbre_observations_pnm
   FROM gn_synthese.synthese s
     JOIN gn_meta.t_datasets USING (id_dataset)
     JOIN taxonomie.taxref USING (cd_nom)
@@ -60,6 +62,8 @@ obs_pnm_ante AS (
   GROUP BY cd_ref
 )
 SELECT nom_complet,
+  taxons_explornature.cd_ref,
+  id_rang,
   regne,
   group1_inpn,
   group2_inpn,
@@ -68,8 +72,10 @@ SELECT nom_complet,
   famille,
   premiere_obs_commune,
   derniere_obs_commune,
+  nbre_observations_commune,
   premiere_obs_pnm,
-  derniere_obs_pnm
+  derniere_obs_pnm,
+  nbre_observations_pnm
 FROM taxons_explornature
   LEFT JOIN obs_ante USING (cd_ref)
   LEFT JOIN obs_pnm_ante USING (cd_ref)
