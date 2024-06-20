@@ -4,21 +4,21 @@
 
 create schema f_taxonomie;
 
-import foreign schema taxonomie fromserver srv_geonature into f_taxonomie;
+import foreign schema taxonomie from server srv_geonature into f_taxonomie;
 
 ```
 
 ```sql
 
-createtablef_gn_synthese.cd_11as
+create table f_gn_synthese.cd_11 as
 
-(select distinct cd_nom fromf_gn_synthese.synthese s );
-
-
-createtablef_gn_synthese.cd_ref11as (select distinct cd_ref fromf_gn_synthese.synthese s joinf_taxonomie.taxrefusing (cd_nom));
+(select distinct cd_nom from f_gn_synthese.synthese s );
 
 
-truncatetaxonomie.cor_nom_liste;
+create table f_gn_synthese.cd_ref11 as (select distinct cd_ref from f_gn_synthese.synthese s join f_taxonomie.taxref using (cd_nom));
+
+
+truncate taxonomie.cor_nom_liste;
 
 
 -- on construit la liste des taxons observés en v11 augmentée de celle de leurs cd_ref v11
@@ -39,7 +39,7 @@ from
 
 taxonomie.taxref
 
-joinf_gn_synthese.cd_11
+join f_gn_synthese.cd_11
 
 using (cd_nom)
 
@@ -53,7 +53,7 @@ from
 
 taxonomie.taxref
 
-joinf_gn_synthese.cd_ref11on
+join f_gn_synthese.cd_ref11 on
 
     (taxref.cd_nom=cd_ref11.cd_ref)),
 
