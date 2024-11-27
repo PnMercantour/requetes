@@ -20,7 +20,13 @@ into
 	f_pr_occtax;
 ```
 
-Relevés occtax
+Création d'un index unique pour éviter les doublons à l'import.
+
+```sql
+CREATE UNIQUE INDEX t_releves_occtax_unique_id_sinp_grp_idx ON pr_occtax.t_releves_occtax (unique_id_sinp_grp);
+```
+
+## Relevés occtax
 
 ```sql
 alter table pr_occtax.t_releves_occtax disable trigger user;
@@ -31,7 +37,7 @@ select
 	td.id_dataset id
 from
 	f_gn_meta.t_datasets ftd
-left join gn_meta.t_datasets td
+join gn_meta.t_datasets td -- On ignore les datasets non importés
 		using (unique_dataset_id)),
 roles as (
 select
@@ -39,7 +45,7 @@ select
 	t_roles.id_role id
 from
 	f_utilisateurs.t_roles f_t_roles
-left join utilisateurs.t_roles
+join utilisateurs.t_roles -- On ignore les roles non importés
 		using (uuid_role))
 insert
 	into
@@ -84,24 +90,16 @@ select
 	4 id_module
 from
 	f_pr_occtax.t_releves_occtax ftro
-left join datasets on
+left join datasets on -- valeur nulle si le dataset n'a pas été importé
 	(ftro.id_dataset = datasets.fid)
-left join roles on
+left join roles on -- valeur nulle si le role n'a pas été importé (ou s'il n'est pas spécifié dans l'original)
 	(ftro.id_digitiser = roles.fid)
 on conflict do nothing;
 
 alter table pr_occtax.t_releves_occtax enable trigger user;
-
-
 ```
 
-Création d'un index unique pour éviter les doublons à l'import.
-
-```sql
-CREATE UNIQUE INDEX t_releves_occtax_unique_id_sinp_grp_idx ON pr_occtax.t_releves_occtax (unique_id_sinp_grp);
-```
-
-observateurs
+## Observateurs
 
 table de correspondance cor_role_releves_occtax
 
@@ -152,12 +150,19 @@ from
 join releves on
 	(fcrro.id_releve_occtax = releves.fid)
 join roles on
-	(fcrro.id_role = roles.fid);
+	(fcrro.id_role = roles.fid)
+on conflict do nothing;
 
 alter table pr_occtax.cor_role_releves_occtax enable trigger user;
 ```
 
-Occurrences occtax
+## Occurrences occtax
+
+Il manque une contrainte d'unicité sur l'attribut unique_id_occurence_occtax
+
+```sql
+CREATE UNIQUE INDEX t_occurrences_occtax_unique_id_occurence_occtax_idx ON pr_occtax.t_occurrences_occtax (unique_id_occurence_occtax);
+```
 
 ```sql
 alter table pr_occtax.t_occurrences_occtax disable trigger user;
@@ -216,16 +221,11 @@ left join f_taxonomie.taxons_disparus td using(cd_nom)
 on conflict do nothing;
 
 alter table pr_occtax.t_occurrences_occtax enable trigger user;
-
-CREATE UNIQUE INDEX t_occurrences_occtax_unique_id_occurence_occtax_idx ON pr_occtax.t_occurrences_occtax (unique_id_occurence_occtax);
-
 ```
-
-Il manque une contrainte d'unicité sur l'attribut unique_id_occurence_occtax
 
 TODO: import des occurrences de taxons disparus, avec table de conversion.
 
-Comptages occtax
+## Comptages occtax
 
 ```sql
 alter table pr_occtax.cor_counting_occtax disable trigger user;
@@ -262,7 +262,8 @@ select
 from
 	f_pr_occtax.cor_counting_occtax fcco
 join occurrences on
-	fcco.id_occurrence_occtax = occurrences.fid;
+	fcco.id_occurrence_occtax = occurrences.fid
+on conflict do nothing;
 
 alter table pr_occtax.cor_counting_occtax enable trigger user;
 
