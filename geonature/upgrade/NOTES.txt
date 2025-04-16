@@ -1,0 +1,84 @@
+2024-11-27
+15:00
+Reprise des synchro occtax depuis geonature.mercantour-parcnational.fr vers geonature.mercantour.eu.
+
+comparaison des données de synthèse et de celles issues du traitement occtax -> synthese
+
+unique_id_sinp = 'a3e4b83c-b5c2-43d0-8f85-1c86f7cf1bc2'
+
+id_nomenclature_sensitivity n'est pas mis à jour (65)
+
+select count(*), id_nomenclature_sensitivity, nom_cite from gn_synthese.synthese
+where id_nomenclature_sensitivity != 65
+group by nom_cite, id_nomenclature_sensitivity;
+
+
+
+observers n'est pas mis à jour
+
+
+## triggers de pr_occtax.cor_counting_occtax
+
+
+### tri_insert_default_validation_status
+Comme son nom l'indique, ce trigger insère une validation par défaut pour chaque nouvelle observation occtax
+
+Le module de validation permet de créer d'autres lignes de validation.
+
+Lorsqu'une validation est ajoutée dans la table des validations, 
+la synthese est mise à jour par un trigger d'insertion qui appelle :
+gn_commons.fct_trg_update_synthese_validation_status()
+
+L'application fait l'hypothèse que la validation qui vient d'être ajoutée est la plus récente dans la liste
+des validations relatives à l'objet à valider. Il serait plus rigoureux de rechercher le statut de validation
+le plus récent (order by  et limit 1).
+
+TODO: stratégie de validation par défaut autre que 'en attente de validation'
+TODO: Les obs occtax importées de l'ancien serveur n'ont pas de statut de validation (elles n'apparaissent pas
+dans le module de validation).
+TODO : qui remplit le statut de validation dans la synthese, est-ce le module de validation?
+id_nomenclature_valid_status
+validator
+
+
+### tri_insert_synthese_cor_counting_occtax ou tri_update_synthese_cor_counting_occtax
+appelle pr_occtax.fct_tri_synthese_insert_counting
+ - récupère l'id du relevé
+ - récupère les observateurs
+ - apppelle pr_occtax.insert_in_synthese
+ - met à jour gn_synthese.cor_observer_synthese avec les observateurs (si ils ont un id)
+
+ TEST
+
+ select * from pr_occtax.cor_counting_occtax cco where unique_id_sinp_occtax = 'ba6b374c-8d12-467c-9ce3-4b7f2ba64518';
+
+ id_counting_occtax vaut 11559
+
+ select * from gn_synthese.synthese where unique_id_sinp = 'ba6b374c-8d12-467c-9ce3-4b7f2ba64518';
+
+ vide
+
+ select pr_occtax.insert_in_synthese(11559);
+
+ L'observation a été créée dans la synthèse
+
+ Si on rappelle la fonction, erreur d'unicité
+
+ Par contre, le report des observateurs dans gn_synthese.cor_observer_synthese n'a pas été fait.
+
+with ma_liste as 
+(select id_counting_occtax from pr_occtax.cor_counting_occtax cco 
+left join gn_synthese.synthese on unique_id_sinp_occtax = unique_id_sinp 
+where unique_id_sinp is null)
+select pr_occtax.insert_in_synthese(id_counting_occtax::integer) from ma_liste;
+
+a pour effet de créer des observations dans la synthèse pour toute observation occtax.
+
+IL MANQUE : le tableau des observateurs (utilisé pour les filtres)
+
+IL MANQUE : les observations de la synthèse qui n'ont pas (ou plus) de contrepartie dans occtax
+
+IL MANQUE : les imports de données PNM (explor'anture, etc)
+
+IL MANQUE : les jeux de données des partenaires
+
